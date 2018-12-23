@@ -1,3 +1,4 @@
-*.py[cop]
+*.py[cod]
 .idea/
 logs/
+migrations/

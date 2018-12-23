@@ -1,10 +1,10 @@
-from flask import session
 # 导入管理器
 from flask_script import Manager
 #导入迁移框架
 from flask_migrate import MigrateCommand,Migrate
-#从初始化文件中导入app
-from info import create_app,db
+#从初始化文件中导入app,添加导入的模型类文件models
+from info import create_app,db,models
+
 
 
 
