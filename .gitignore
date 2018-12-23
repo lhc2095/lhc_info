@@ -1,2 +1,3 @@
 *.py[cop]
 .idea/
+logs/
