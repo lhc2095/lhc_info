@@ -5,7 +5,9 @@ class Config():
     DEBUG=None
     SECRET_KEY = 'OdDaeav4qMrfLtuRb6hWolkyC5UgB9HvyhiAWccLTuJYfoOJOhLJ+Q=='     #配置密钥
     SESSION_TYPE= 'redis'                                                                          # 指定session类型为redis
-    SESSION_REDIS= StrictRedis(host='127.0.0.1', port=6379)         # 连接redis
+    REDIS_HOST='127.0.0.1'
+    REDIS_PORT=6379
+    SESSION_REDIS= StrictRedis(host=REDIS_HOST, port=REDIS_PORT)         # 连接redis
     SESSION_USE_SIGNER = True                                                               #是否对发送到浏览器上session的cookie值进行加密
     PERMANPERMANPERMANENT_SESSION_LIFETIME= 86400
 
