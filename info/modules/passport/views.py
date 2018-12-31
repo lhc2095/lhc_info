@@ -10,7 +10,7 @@ import re,random
 
 
 
-
+# 生成图片验证码接口
 @passport_blue.route('/image_code')
 def generate_image_code():
         """
@@ -41,6 +41,8 @@ def generate_image_code():
             response.headers['Content-Type']='image/jpg'
             return response
 
+
+# 发送短信接口
 @passport_blue.route('/sms_code',methods=['POST'])
 def send_sms_code():    #发送短信
             """
@@ -119,6 +121,7 @@ def send_sms_code():    #发送短信
                 return jsonify(errno=RET.THIRDERR,errmsg='发送失败')
 
 
+# 注册接口
 @passport_blue.route('/register',methods=['POST'])
 def register():
     """
@@ -152,6 +155,13 @@ def register():
     if real_sms_code != sms_code:
         return jsonify(errno=RET.DATAERR,errmsg='输入的手机验证码有误')
 
+    #手机验证码比对成功后删除
+    try:
+        redis_store.delete('SmsCode_'+mobile)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg='删除数据失败')
+
     try:
         user=User.query.filter(User.mobile==mobile).first()
     except Exception as e:
@@ -180,6 +190,8 @@ def register():
 
     return  jsonify(errno=RET.OK,errmsg='创建用户成功')
 
+
+# 登录接口
 @passport_blue.route('/login',methods=["POST"])
 def login():
     """
@@ -193,7 +205,7 @@ def login():
 
     if not all([mobile,password]):
         return jsonify(errno=RET.PARAMERR,errmsg='参数缺失')
-    if not re.match(r'1[3456789]\d{9}$'):
+    if not re.match(r'1[3456789]\d{9}$',mobile):
         return jsonify(errno=RET.PARAMERR,errmsg='手机号码格式错误')
     try:
         user=User.query.filter_by(mobile=mobile).first()
@@ -218,6 +230,16 @@ def login():
     session['nick_name']=user.nick_name
 
     return jsonify(errno=RET.OK,errmsg='OK')
+
+
+# 退出接口
+@passport_blue.route('/logout')
+def logout():
+        session.pop('user_id',None)
+        session.pop('mobile',None)
+        session.pop('nick_name',None)
+
+        return jsonify(error=RET.OK,errmsg='OK')
 
 
 
